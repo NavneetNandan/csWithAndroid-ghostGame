@@ -29,7 +29,6 @@ public class GhostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ghost);
         Button challange=(Button)findViewById(R.id.challenge);
-
         challange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,7 +102,6 @@ public class GhostActivity extends AppCompatActivity {
             label.setText("Computer Won");
         }else {
             String h=dictionary.getAnyWordStartingWith(text.getText().toString());
-            Log.e("ph",h);
             if (h==null){
                 Log.e("not","foud");
                 label.setText("Computer Won");
