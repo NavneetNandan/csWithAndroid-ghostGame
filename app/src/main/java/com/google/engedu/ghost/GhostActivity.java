@@ -23,6 +23,7 @@ public class GhostActivity extends AppCompatActivity {
     private GhostDictionary dictionary;
     private boolean userTurn = false;
     private Random random = new Random();
+    private GhostDictionary fastDictionary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +44,18 @@ public class GhostActivity extends AppCompatActivity {
         AssetManager assetManager = getAssets();
         try {
             InputStream inputStream = assetManager.open("words.txt");
-            dictionary = new SimpleDictionary(inputStream);
+            //dictionary = new SimpleDictionary(inputStream);
+            dictionary=new FastDictionary(inputStream);
+            Log.e("dice",dictionary.isWord("add")+"");
+
         } catch (IOException e) {
             Toast toast = Toast.makeText(this, "Could not load dictionary", Toast.LENGTH_LONG);
             toast.show();
         }
+        //TrieNode root=new TrieNode();
+        //root.add("abca");
+        //root.add("add");
+        //Log.e("fast0",root.isWord("add")+"");
         onStart(null);
     }
 
@@ -121,8 +129,8 @@ public class GhostActivity extends AppCompatActivity {
         if ((event.getUnicodeChar()>='a'&&event.getUnicodeChar()<='z')||(event.getUnicodeChar()>='A'&&event.getUnicodeChar()<='Z')){
             TextView text = (TextView) findViewById(R.id.ghostText);
             text.append(String.valueOf((char)event.getUnicodeChar()));
-            Log.e("wors",text.getText().toString());
-            computerTurn();
+            Log.e("wors",dictionary.isWord(text.getText().toString())+"");
+            //computerTurn();
             return true;
         }
         else{
