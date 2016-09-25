@@ -3,9 +3,12 @@ package com.google.engedu.ghost;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,10 +28,23 @@ public class GhostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ghost);
+        Button challange=(Button)findViewById(R.id.challenge);
+
+        challange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView label=(TextView)findViewById(R.id.gameStatus);
+                TextView text = (TextView) findViewById(R.id.ghostText);
+                if (dictionary.isWord(text.getText().toString())&&text.getText().length()>=4)
+                    label.setText("You Won");
+                else
+                    label.setText("Computer Won");
+            }
+        });
         AssetManager assetManager = getAssets();
         try {
             InputStream inputStream = assetManager.open("words.txt");
-            dictionary = new FastDictionary(inputStream);
+            dictionary = new SimpleDictionary(inputStream);
         } catch (IOException e) {
             Toast toast = Toast.makeText(this, "Could not load dictionary", Toast.LENGTH_LONG);
             toast.show();
@@ -79,9 +95,40 @@ public class GhostActivity extends AppCompatActivity {
     }
 
     private void computerTurn() {
+        Log.e("in","me");
         TextView label = (TextView) findViewById(R.id.gameStatus);
         // Do computer turn stuff then make it the user's turn again
-        userTurn = true;
-        label.setText(USER_TURN);
+        TextView text = (TextView) findViewById(R.id.ghostText);
+        if (text.length()>=4&&dictionary.isWord(text.getText().toString())){
+            label.setText("Computer Won");
+        }else {
+            String h=dictionary.getAnyWordStartingWith(text.getText().toString());
+            Log.e("ph",h);
+            if (h==null){
+                Log.e("not","foud");
+                label.setText("Computer Won");
+            }
+            else {
+                text.setText(h.substring(0, text.length() + 1));
+                userTurn = true;
+                label.setText(USER_TURN);
+            }
+
+        }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+
+        if ((event.getUnicodeChar()>='a'&&event.getUnicodeChar()<='z')||(event.getUnicodeChar()>='A'&&event.getUnicodeChar()<='Z')){
+            TextView text = (TextView) findViewById(R.id.ghostText);
+            text.append(String.valueOf((char)event.getUnicodeChar()));
+            Log.e("wors",text.getText().toString());
+            computerTurn();
+            return true;
+        }
+        else{
+            return super.onKeyUp(keyCode, event);
+        }
     }
 }
