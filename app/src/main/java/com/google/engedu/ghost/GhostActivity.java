@@ -30,17 +30,6 @@ public class GhostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ghost);
         Button challange=(Button)findViewById(R.id.challenge);
-        challange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextView label=(TextView)findViewById(R.id.gameStatus);
-                TextView text = (TextView) findViewById(R.id.ghostText);
-                if (dictionary.isWord(text.getText().toString())&&text.getText().length()>=4)
-                    label.setText("You Won");
-                else
-                    label.setText("Computer Won");
-            }
-        });
         AssetManager assetManager = getAssets();
         try {
             InputStream inputStream = assetManager.open("words.txt");
@@ -52,6 +41,19 @@ public class GhostActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(this, "Could not load dictionary", Toast.LENGTH_LONG);
             toast.show();
         }
+
+        challange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView label=(TextView)findViewById(R.id.gameStatus);
+                TextView text = (TextView) findViewById(R.id.ghostText);
+                if (dictionary.isWord(text.getText().toString())&&text.getText().length()>=4)
+                    label.setText("You Won");
+                else
+                    label.setText("Computer Won");
+            }
+        });
+
         //TrieNode root=new TrieNode();
         //root.add("abca");
         //root.add("add");
@@ -109,7 +111,7 @@ public class GhostActivity extends AppCompatActivity {
         if (text.length()>=4&&dictionary.isWord(text.getText().toString())){
             label.setText("Computer Won");
         }else {
-            String h=dictionary.getAnyWordStartingWith(text.getText().toString());
+            String h=dictionary.getGoodWordStartingWith(text.getText().toString());
             if (h==null){
                 Log.e("not","foud");
                 label.setText("Computer Won");
@@ -130,7 +132,7 @@ public class GhostActivity extends AppCompatActivity {
             TextView text = (TextView) findViewById(R.id.ghostText);
             text.append(String.valueOf((char)event.getUnicodeChar()));
             Log.e("wors",dictionary.isWord(text.getText().toString())+"");
-            //computerTurn();
+            computerTurn();
             return true;
         }
         else{
